@@ -53,7 +53,7 @@ class PBPrivate {
             $_page,
             $_section,
             array(
-                __( 'Export private parts (Never in webbook)', 'pbprivate' )
+                __( 'Export private sections (Never in webbook)', 'pbprivate' )
             )
         );
 
