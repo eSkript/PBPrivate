@@ -1,17 +1,31 @@
 <?php
 
+/**
+ * Class PBPrivate
+ * Function of the Plugin
+ */
 class PBPrivate {
 
+    /**
+     * @var bool if plugin is initiated
+     */
     private static $initiated = false;
 
-    // Name of the array
+    /**
+     * @var string Name of the settings array
+     */
     protected static $option_name = 'pbprivate';
 
-    // Default values
+    /**
+     * @var array Default values of the settings
+     */
     protected static $data = array(
         'export' => false
     );
 
+    /**
+     *  Called by the init hook
+     */
     public static function init() {
         if ( ! self::$initiated ) {
             self::init_hooks();
@@ -29,10 +43,17 @@ class PBPrivate {
 
     }
 
+    /**
+     * Handles the private Shortcode
+     * @param $atts Attributes
+     * @param string|null $content the content in between
+     * @return string
+     */
     public static function private_shortcode( $atts , $content = null ) {
 
         $options = get_option( 'pressbooks_theme_options_global' );
 
+        //Return the content in the Shortcode if we are currently exporting and the export of the boxes is selected
         if(isset($_POST['export_formats']) && $options["private_boxes"]){
             return(do_shortcode($content));
         }else{
@@ -40,6 +61,9 @@ class PBPrivate {
         }
     }
 
+    /**
+     * Init Admin Hooks and add the setting
+     */
     public static function admin_init() {
         register_setting('private_options', static::$option_name, array('PBPrivate', 'validate'));
 
@@ -60,7 +84,10 @@ class PBPrivate {
         add_filter( "sanitize_option_{$_option}", array( 'PBPrivate', 'sanitize' ), 11 );
     }
 
-    // Global Options Field Callback
+    /**
+     * Output of the option
+     * @param $args Arguments
+     */
     public static function private_callback( $args ) {
 
         $options = get_option( 'pressbooks_theme_options_global' );
@@ -74,6 +101,11 @@ class PBPrivate {
         echo $html;
     }
 
+    /**
+     * Callback if the option gets changed
+     * @param $input
+     * @return mixed
+     */
     public static function sanitize($input){
         if ( ! isset( $_POST['pressbooks_theme_options_global']['private_boxes'] ) || $_POST['pressbooks_theme_options_global']['private_boxes'] != '1' ) {
             $input['private_boxes'] = 0;
