@@ -54,7 +54,7 @@ class PBPrivate {
         $options = get_option( 'pressbooks_theme_options_global' );
 
         //Return the content in the Shortcode if we are currently exporting and the export of the boxes is selected
-        if(isset($_POST['export_formats']) && $options["private_boxes"]){
+        if((isset($_POST['export_formats']) || array_key_exists( 'format', $GLOBALS['wp_query']->query_vars )) && $options["private_boxes"]){
             return(do_shortcode($content));
         }else{
             return("");
