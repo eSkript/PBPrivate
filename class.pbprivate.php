@@ -40,22 +40,29 @@ class PBPrivate {
 
         add_shortcode( 'private', array( 'PBPrivate', 'private_shortcode' ) );
         add_action('admin_init', array('PBPrivate', 'admin_init'));
-
+        add_filter( 'query_vars', array('PBPrivate', 'add_query_vars_filter') );
+        add_filter( 'parse_query', array('PBPrivate', 'change_show_setting') );
+        add_filter( 'wp_enqueue_scripts', array('PBPrivate', 'add_button_to_chapters') );
+        add_filter( 'wp_enqueue_scripts', array('PBPrivate', 'add_css') );
     }
 
     /**
-     * Handles the private Shortcode
+     * Handles the private Shortcode [private][/private]
      * @param $atts Attributes
      * @param string|null $content the content in between
      * @return string
      */
     public static function private_shortcode( $atts , $content = null ) {
-
+        global $post;
         $options = get_option( 'pressbooks_theme_options_global' );
+        $nContent = '<div class="PBPrivate">'.do_shortcode($content).'</div>';
 
         //Return the content in the Shortcode if we are currently exporting and the export of the boxes is selected
         if((isset($_POST['export_formats']) || array_key_exists( 'format', $GLOBALS['wp_query']->query_vars )) && $options["private_boxes"]){
-            return(do_shortcode($content));
+            return($nContent);
+        //Return the content if the user can edit the post and has selected to show the content on the webpage
+        }else if(current_user_can('edit_post', $post->ID) && get_user_meta( get_current_user_id(), "PBShowPrivate", true )){
+            return($nContent); 
         }else{
             return("");
         }
@@ -65,6 +72,7 @@ class PBPrivate {
      * Init Admin Hooks and add the setting
      */
     public static function admin_init() {
+        //Add the admin setting that alows to select if the private sections are exported
         register_setting('private_options', static::$option_name, array('PBPrivate', 'validate'));
 
         $_page = $_option = 'pressbooks_theme_options_global';
@@ -82,10 +90,20 @@ class PBPrivate {
         );
 
         add_filter( "sanitize_option_{$_option}", array( 'PBPrivate', 'sanitize' ), 11 );
+
+        //Adds the button to the editor
+        add_filter( 'mce_external_plugins', function ( $plugin_array ) {
+            $plugin_array['pbprivate'] = plugin_dir_url( __FILE__ ) .'admin/js/mcebutton.js';
+            return $plugin_array;
+        });
+        add_filter( 'mce_buttons_2', function( $buttons ) {
+            array_push( $buttons, 'pbprivate' );
+            return $buttons;
+        });
     }
 
     /**
-     * Output of the option
+     * Output of the admin option
      * @param $args Arguments
      */
     public static function private_callback( $args ) {
@@ -102,7 +120,7 @@ class PBPrivate {
     }
 
     /**
-     * Callback if the option gets changed
+     * Callback if the admin option gets changed
      * @param $input
      * @return mixed
      */
@@ -114,6 +132,61 @@ class PBPrivate {
         }
         return($input);
     }
+    
+    /**
+     * Add query vars, enabling the button on the page
+     * @param $vars
+     * @return array
+     */
+    public static function add_query_vars_filter( $vars ){
+        $vars[] = "show_private";
+        $vars[] = "hide_private";
+        return $vars;
+    }
 
+    /**
+     * Changing the user setting if the private sections are shown on the webpage
+     */
+    public static function change_show_setting(){ 
+        if(is_user_logged_in()){
+            if(get_query_var('show_private', false )){
+                update_user_meta(get_current_user_id(), "PBShowPrivate", true);
+            }
+            if(get_query_var('hide_private', false )){
+                update_user_meta(get_current_user_id(), "PBShowPrivate", false);
+            }
+        }
+    }
+
+    /**
+     * Adds the button to the webpage allowing the user to change the display setting
+     */
+    public static function add_button_to_chapters(){
+        global $post;
+        if(is_single() && current_user_can('edit_post', $post->ID)){
+            wp_register_script( 'PBPrivate', plugin_dir_url( __FILE__ ) .'public/js/button.js' );
+            $value_array = array(
+                //'some_string' => __( 'Some string to translate', 'plugin-domain' ),
+                'is_on' => get_user_meta( get_current_user_id(), "PBShowPrivate", true ),
+                'hide_url' => add_query_arg( array(
+                    'hide_private' => true,
+                    'show_private' => false,
+                ), $_SERVER['REQUEST_URI'] ),
+                'show_url' => add_query_arg( array(
+                    'hide_private' => false,
+                    'show_private' => true,
+                ), $_SERVER['REQUEST_URI'] )
+            );
+            wp_localize_script( 'PBPrivate', 'PBPrivate', $value_array );
+            wp_enqueue_script( 'PBPrivate' );
+        }
+    }
+
+    /**
+     * Adds custom css to the webpage
+     */
+    public static function add_css(){
+        wp_enqueue_style( 'PBPrivate', plugin_dir_url( __FILE__ ) .'public/css.css');
+    }
 
 }
