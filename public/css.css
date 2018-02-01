@@ -2,6 +2,7 @@
     border-left: solid 1px #c6c6c6;
     padding-left: 10px;
     position: relative;
+    margin: 20px 0;
 }
 .PBPrivate::before{
     content: '\f160';
