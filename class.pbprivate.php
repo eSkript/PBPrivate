@@ -44,6 +44,11 @@ class PBPrivate {
         add_filter( 'parse_query', array('PBPrivate', 'change_show_setting') );
         add_filter( 'wp_enqueue_scripts', array('PBPrivate', 'add_button_to_chapters') );
         add_filter( 'wp_enqueue_scripts', array('PBPrivate', 'add_css') );
+        //Add Style to Export
+        add_filter( 'pb_epub_css_override', array( 'PBPrivate', 'scssOverrides' ) );
+        add_filter( 'pb_pdf_css_override', array( 'PBPrivate', 'scssOverrides' ) );
+        add_filter( 'pb_mpdf_css_override', array( 'PBPrivate', 'scssOverrides' ) );
+        add_filter( 'pb_web_css_override', array( 'PBPrivate', 'scssOverrides' ) );
     }
 
     /**
@@ -55,14 +60,13 @@ class PBPrivate {
     public static function private_shortcode( $atts , $content = null ) {
         global $post;
         $options = get_option( 'pressbooks_theme_options_global' );
-        $nContent = '<div class="PBPrivate">'.do_shortcode($content).'</div>';
 
         //Return the content in the Shortcode if we are currently exporting and the export of the boxes is selected
         if((isset($_POST['export_formats']) || array_key_exists( 'format', $GLOBALS['wp_query']->query_vars )) && $options["private_boxes"]){
-            return($nContent);
+            return('<table class="PBPrivate"><tr><td class="PBPrivate-header"><h2><img src="'.PBPrivate__PLUGIN_URL.'export/img/lock.svg"/><span class="hidden">Private Content</span></h2></td><td class="PBPrivate-content">'.do_shortcode($content).'</td></tr></table>');
         //Return the content if the user can edit the post and has selected to show the content on the webpage
         }else if(current_user_can('edit_post', $post->ID) && get_user_meta( get_current_user_id(), "PBShowPrivate", true )){
-            return($nContent); 
+            return('<div class="PBPrivate"><h2 class="dashicons dashicons-lock PBPrivate-header"><span class="hidden">Private Content</span></h2>'.do_shortcode($content).'</div>'); 
         }else{
             return("");
         }
@@ -85,7 +89,7 @@ class PBPrivate {
             $_page,
             $_section,
             array(
-                __( 'Export private sections (Never in webbook)', 'pbprivate' )
+                __( 'Export private sections', 'pbprivate' )
             )
         );
 
@@ -93,7 +97,7 @@ class PBPrivate {
 
         //Adds the button to the editor
         add_filter( 'mce_external_plugins', function ( $plugin_array ) {
-            $plugin_array['pbprivate'] = plugin_dir_url( __FILE__ ) .'admin/js/mcebutton.js';
+            $plugin_array['pbprivate'] = PBPrivate__PLUGIN_URL .'admin/js/mcebutton.js';
             return $plugin_array;
         });
         add_filter( 'mce_buttons_2', function( $buttons ) {
@@ -164,7 +168,7 @@ class PBPrivate {
     public static function add_button_to_chapters(){
         global $post;
         if(is_single() && current_user_can('edit_post', $post->ID)){
-            wp_register_script( 'PBPrivate', plugin_dir_url( __FILE__ ) .'public/js/button.js' );
+            wp_register_script( 'PBPrivate', PBPrivate__PLUGIN_URL .'public/js/button.js' );
             $value_array = array(
                 //'some_string' => __( 'Some string to translate', 'plugin-domain' ),
                 'is_on' => get_user_meta( get_current_user_id(), "PBShowPrivate", true ),
@@ -186,7 +190,12 @@ class PBPrivate {
      * Adds custom css to the webpage
      */
     public static function add_css(){
-        wp_enqueue_style( 'PBPrivate', plugin_dir_url( __FILE__ ) .'public/css.css');
+        wp_enqueue_style( 'PBPrivate', PBPrivate__PLUGIN_URL.'public/css.css', array(), PBPrivate_VERSION);
+    }
+
+    public static function scssOverrides($css){
+        $css .= file_get_contents(PBPrivate__PLUGIN_DIR.'export/css.css');
+        return $css;
     }
 
 }

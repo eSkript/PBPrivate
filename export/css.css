@@ -1,0 +1,36 @@
+.PBPrivate{
+    margin: 20px 0;
+    margin-left: -35px;
+    width: 100%;
+    border: none;
+}
+
+.PBPrivate-header{
+    width: 20px;
+    overflow: hidden;
+    background: #c6c6c6;
+    vertical-align: top;
+    padding: 0;
+    border: none;
+    padding-left: 3px;
+    padding-top: 4px;
+}
+
+.PBPrivate-header h2{
+    margin-top:0;
+}
+
+.PBPrivate-header img{
+    background: none;
+    border: none;
+}
+
+.hidden{
+    display: none;
+}
+
+.PBPrivate-content{
+    padding-left: 35px;
+    vertical-align: top;
+    border: none;
+}
