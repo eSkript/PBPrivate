@@ -12,8 +12,8 @@
     vertical-align: top;
     padding: 0;
     border: none;
-    text-align: center;
     padding-top: 4px;
+    padding-left:3px;
 }
 
 .PBPrivate-header h2{
