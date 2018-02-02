@@ -1,18 +1,20 @@
 .PBPrivate{
-    border-left: solid 1px #c6c6c6;
-    padding-left: 10px;
+    border-left: solid 20px #c6c6c6;
+    padding-left: 35px;
     position: relative;
     margin: 20px 0;
+    margin-left: -30px;
 }
 .PBPrivate::before{
     content: '\f160';
     position: absolute;
-    left: -30px;
-    color: #8e8e8e;
+    left: -20px;
+    top: 5px;
+    color: white;
     display: inline-block;
     width: 20px;
     height: 20px;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 1;
     font-family: dashicons;
     text-decoration: inherit;
