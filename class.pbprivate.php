@@ -63,7 +63,7 @@ class PBPrivate {
 
         //Return the content in the Shortcode if we are currently exporting and the export of the boxes is selected
         if((isset($_POST['export_formats']) || array_key_exists( 'format', $GLOBALS['wp_query']->query_vars )) && $options["private_boxes"]){
-            return('<table class="PBPrivate"><tr><td class="PBPrivate-header"><h2><img src="'.PBPrivate__PLUGIN_URL.'export/img/lock.svg"/><span class="hidden">Private Content</span></h2></td><td class="PBPrivate-content">'.do_shortcode($content).'</td></tr></table>');
+            return('<table class="PBPrivate"><tr><td class="PBPrivate-header"><img src="'.PBPrivate__PLUGIN_URL.'export/img/lock.svg"/><span class="hidden"><h2>Private Content</h2></span></td><td class="PBPrivate-content">'.do_shortcode($content).'</td></tr></table>');
         //Return the content if the user can edit the post and has selected to show the content on the webpage
         }else if(current_user_can('edit_post', $post->ID) && get_user_meta( get_current_user_id(), "PBShowPrivate", true )){
             return('<div class="PBPrivate"><h2 class="dashicons dashicons-lock PBPrivate-header"><span class="hidden">Private Content</span></h2>'.do_shortcode($content).'</div>'); 
