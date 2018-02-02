@@ -12,17 +12,9 @@
     vertical-align: top;
     padding: 0;
     border: none;
-    padding-top: 4px;
-    padding-left:3px;
-}
-
-.PBPrivate-header h2{
-    margin-top:0;
-}
-
-.PBPrivate-header img{
-    background: none;
-    border: none;
+    background-image: url("PBPrivate__PLUGIN_URLexport/img/lock.svg");
+    background-repeat: no-repeat;
+    background-position: center 5px;
 }
 
 .hidden{
