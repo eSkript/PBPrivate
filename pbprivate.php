@@ -1,14 +1,19 @@
 <?php
 /**
+ * 
+ * @link    https://github.com/lukaiser
+ * @since   1.0.0
  * @package PBPrivate
+ *
  */
 /*
-Plugin Name: PBPrivate
-Plugin URI: https://github.com/lukaiser/PBPrivate
-Description: By adding the shortcode [private]bla bla[/private] the content is not displayed in the web view of a PressBook. But you can decide to show it in the export.
-Version: 0.9.0
-Author: Lukas Kaiser
-Author URI: http://emperor.ch
+ * @wordpress-plugin
+ * Plugin Name: PBPrivate
+ * Plugin URI: https://github.com/lukaiser/PBPrivate
+ * Description: This plugin allows Pressbooks editors to insert private sections in to their chapters.
+ * Version: 1.0.0
+ * Author: Lukas Kaiser
+ * Author URI: https://github.com/lukaiser
 */
 
 
@@ -18,7 +23,7 @@ if ( !function_exists( 'add_action' ) ) {
     exit;
 }
 
-define( 'PBPrivate_VERSION', '0.9.2' );
+define( 'PBPrivate_VERSION', '1.0.0' );
 define( 'PBPrivate__MINIMUM_WP_VERSION', '3.0' );
 define( 'PBPrivate__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'PBPrivate__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
