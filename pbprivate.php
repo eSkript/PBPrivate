@@ -1,7 +1,7 @@
 <?php
 /**
  * 
- * @link    https://github.com/lukaiser
+ * @link    https://github.com/eSkript/PBPrivate
  * @since   1.0.0
  * @package PBPrivate
  *
@@ -9,7 +9,7 @@
 /*
  * @wordpress-plugin
  * Plugin Name: PBPrivate
- * Plugin URI: https://github.com/lukaiser/PBPrivate
+ * Plugin URI: https://github.com/eSkript/PBPrivate
  * Description: This plugin allows Pressbooks editors to insert private sections in to their chapters.
  * Version: 1.0.0
  * Author: Lukas Kaiser
